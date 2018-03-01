@@ -12,7 +12,18 @@ class MoviesController < ApplicationController
 
   def index
     @order = params[:sort]
+    @all_ratings = Movie.all_ratings
+    @ratings = params[:ratings]
+    if params[:commit] == nil
+      @ratings = {}
+      @all_ratings.each {|key| @ratings[key] = "1"}
+    end
+
     @movies = Movie.all
+    if @ratings.length > 0
+      @movies = @movies.where(:rating => @ratings.keys)
+    end
+    
     if @order != nil
       @movies = @movies.order(@order)
     end
